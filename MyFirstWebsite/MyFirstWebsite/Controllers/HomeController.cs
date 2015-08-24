@@ -9,17 +9,44 @@ namespace MyFirstWebsite.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        MyWebPageDb _db = new MyWebPageDb();
+        public ActionResult Index(string searchTerm = null)
         {
-            var controller = RouteData.Values["controller"];
-            var action = RouteData.Values["action"];
-            var id = RouteData.Values["id"];
+            //var model =
+            //    from r in _db.Games
+            //    orderby r.Reviews.Average(review => review.Rating) descending
+            //    select new GameListViewModel
+            //    {
+            //        Id = r.Id,
+            //        Name = r.Name,
+            //        Genre = r.Genre,
+            //        Description = r.Description,
+            //        Developer = r.Developer,
+            //        Publisher = r.Publisher,
+            //        CountOfReviews = r.Reviews.Count()
+            //    };
 
-            var message = String.Format("{0}::{1} {2}", controller, action, id);
 
-            ViewBag.Message = message;
+            //Comprehension syntax
+            var model =
+                _db.Games
+                .OrderBy(g => g.Reviews.Average(review => review.Rating))
+                .Where(g => searchTerm == null || g.Name.StartsWith(searchTerm))
+                .Take(10) //Only available in comprehension syntax
+                .Select(g =>
+                    new GameListViewModel
+                    {
+                        Id = g.Id,
+                        Name = g.Name,
+                        Genre = g.Genre,
+                        Description = g.Description,
+                        Developer = g.Developer,
+                        Publisher = g.Publisher,
+                        CountOfReviews = g.Reviews.Count()
+                    }
+                    );
 
-            return View();
+            return View(model);
         }
 
         public ActionResult About()
@@ -35,6 +62,15 @@ namespace MyFirstWebsite.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_db != null)
+            {
+                _db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

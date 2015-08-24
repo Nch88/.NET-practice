@@ -16,11 +16,7 @@ namespace MyFirstWebsite
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             //Routes are checked sequentially from the top, order of routes matter
-
-            routes.MapRoute("Stuff",
-                "stuff/{name}",
-                new { controller = "Stuff", action = "Search", name = UrlParameter.Optional });
-
+           
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

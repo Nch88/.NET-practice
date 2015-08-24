@@ -1,0 +1,36 @@
+﻿@model IEnumerable<MyFirstWebsite.Models.Image>
+
+@{
+    ViewBag.Title = "Pretty images";
+}
+
+@section featured{
+<h2>Pretty images</h2>
+}
+
+
+
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            Image
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Rating)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    
+    @Html.Partial("_Picture", item)
+}
+
+</table>
